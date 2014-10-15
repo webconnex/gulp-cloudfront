@@ -43,7 +43,7 @@ module.exports = function(options) {
 
                 // Update the distribution with the new default root object (trim the precedeing slash)
                 data.DistributionConfig.DefaultRootObject = defaultRootObject.substr(1);
-
+                data.DistributionConfig.CustomErrorResponses.Items[0].ResponsePagePath = defaultRootObject;
                 cloudfront.updateDistribution({
                     IfMatch: data.ETag,
                     Id: options.distributionId,
@@ -53,6 +53,7 @@ module.exports = function(options) {
                     if (err) {
                         deferred.reject(err);
                     } else {
+                        gutil.log('gulp-cloudfront:', 'update error path to [' + defaultRootObject.substr(1)+']');
                         gutil.log('gulp-cloudfront:', 'DefaultRootObject updated to [' + defaultRootObject.substr(1) + '].');
                         deferred.resolve();
                     }
