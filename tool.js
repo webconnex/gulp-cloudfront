@@ -13,12 +13,12 @@ module.exports = function(options) {
         secretAccessKey: options.secret
     });
 
-    var updateDefaultRootObject = function (defaultRootObject) {
+    var updateDefaultRootObject = function (defaultRootObject, dist) {
 
         var deferred = Q.defer();
 
         // Get the existing distribution id
-        cloudfront.getDistribution({ Id: options.distributionId }, function(err, data) {
+        cloudfront.getDistribution({ Id: dist.id }, function(err, data) {
 
             if (err) {
                 deferred.reject(err);
@@ -44,21 +44,25 @@ module.exports = function(options) {
                 // Update the distribution with the new default root object (trim the precedeing slash)
                 data.DistributionConfig.DefaultRootObject = defaultRootObject.substr(1);
                 data.DistributionConfig.CustomErrorResponses.Items[0].ResponsePagePath = defaultRootObject;
+
+                // Loop through this for each distribution
                 cloudfront.updateDistribution({
                     IfMatch: data.ETag,
-                    Id: options.distributionId,
+                    Id: dist.id,
                     DistributionConfig: data.DistributionConfig
-                }, function(err, data) {
+                    }, function(err, data) {
 
-                    if (err) {
-                        deferred.reject(err);
-                    } else {
-                        gutil.log('gulp-cloudfront:', 'update error path to [' + defaultRootObject.substr(1)+']');
-                        gutil.log('gulp-cloudfront:', 'DefaultRootObject updated to [' + defaultRootObject.substr(1) + '].');
-                        deferred.resolve();
-                    }
+                        if (err) {
+                            deferred.reject(err);
+                        } else {
+                            gutil.log('gulp-cloudfront:', '('+ dist.name +') update error path to [' + defaultRootObject.substr(1)+']');
+                            gutil.log('gulp-cloudfront:', '('+ dist.name +') DefaultRootObject updated to [' + defaultRootObject.substr(1) + '].');
+                            deferred.resolve();
+                        }
 
-                });
+                    });
+                
+                
 
             }
         });

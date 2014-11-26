@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/smysnk/gulp-cloudfront.git"
+    "url": "git://github.com/webconnex/gulp-cloudfront.git"
   },
   "keywords": [
     "gulpplugin",
@@ -35,7 +35,7 @@
     "cloudfront",
     "cdn"
   ],
-  "homepage": "https://github.com/smysnk/gulp-cloudfront",
+  "homepage": "https://github.com/webconnex/gulp-cloudfront",
   "author": "Joshua Bellamy-Henn <smysnk@gmail.com>",
   "license": "MIT",
   "bugs": {

@@ -28,14 +28,21 @@ module.exports = function(options) {
                 filename = filename.substr(0, filename.length - 3);
             }
 
-            tool.updateDefaultRootObject(filename)
-                .then(function() {
-                    return callback(null, file);
-                }, function(err) {
-                    gutil.log(new gutil.PluginError('gulp-cloudfront', err));
-                    callback(null, file);
+            
+            // update all the distributions here
+            for(var i = 0; i < options.distributions.length; i++) {
 
-                });
+                var dist = options.distributions[i];
+                gutil.log('gulp-cloudfront:', 'Deploying to '+ dist.name);
+                tool.updateDefaultRootObject(filename, dist)
+                    .then(function() {
+                        return callback(null, file);
+                    }, function(err) {
+                        gutil.log(new gutil.PluginError('gulp-cloudfront', err));
+                        callback(null, file);
+
+                    });
+            }
 
         } else {
             return callback(null, file);
